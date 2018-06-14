@@ -28,7 +28,9 @@ setup(
         "seaborn==0.7.1",
         "{}==1.1.0".format(tensorflow_version),
         "editdistance==0.3.1",
-        "jsonpickle==0.9.5"
+        "jsonpickle==0.9.5",
+        "torchvision",
+        "configparser"
     ],
     tests_require=[
         "mock==2.0.0"

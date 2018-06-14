@@ -15,32 +15,32 @@ from torch.autograd import Variable
 
 
 def init_embeddings(embeddings):
-    init.uniform(embeddings.weight, -0.05, 0.05)
+    init.uniform_(embeddings.weight, -0.05, 0.05)
 
 
 def init_linear(linear):
-    init.uniform(linear.weight, -0.05, 0.05)
-    init.constant(linear.bias, 0.)
+    init.uniform_(linear.weight, -0.05, 0.05)
+    init.constant_(linear.bias, 0.)
 
 
 def init_rnn(rnn):
     if isinstance(rnn, (nn.GRUCell, nn.LSTMCell, nn.RNNCell)):
-        init.xavier_uniform(rnn.weight_hh)
-        init.xavier_uniform(rnn.weight_ih)
-        init.constant(rnn.bias_hh, 0.)
-        init.constant(rnn.bias_ih, 0.)
+        init.xavier_uniform_(rnn.weight_hh)
+        init.xavier_uniform_(rnn.weight_ih)
+        init.constant_(rnn.bias_hh, 0.)
+        init.constant_(rnn.bias_ih, 0.)
 
     else:
         for layer in range(rnn.num_layers):
-            init.xavier_uniform(getattr(rnn, 'weight_hh_l{layer}'.format(layer=layer)))
-            init.xavier_uniform(getattr(rnn, 'weight_ih_l{layer}'.format(layer=layer)))
-            init.constant(getattr(rnn, 'bias_hh_l{layer}'.format(layer=layer)), 0.)
-            init.constant(getattr(rnn, 'bias_ih_l{layer}'.format(layer=layer)), 0.)
+            init.xavier_uniform_(getattr(rnn, 'weight_hh_l{layer}'.format(layer=layer)))
+            init.xavier_uniform_(getattr(rnn, 'weight_ih_l{layer}'.format(layer=layer)))
+            init.constant_(getattr(rnn, 'bias_hh_l{layer}'.format(layer=layer)), 0.)
+            init.constant_(getattr(rnn, 'bias_ih_l{layer}'.format(layer=layer)), 0.)
 
 
 def init_conv(conv):
-    init.xavier_uniform(conv.weight)
-    init.constant(conv.bias, 0.)
+    init.xavier_uniform_(conv.weight)
+    init.constant_(conv.bias, 0.)
 
 
 def init_sequential_linear(sequential):

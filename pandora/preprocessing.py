@@ -594,7 +594,7 @@ class Preprocessor(object):
                     if c in (BOS, EOS):
                         continue
                     # truncate once padding is generated
-                    if c == UNK:
+                    if c == PAD:
                         break
                     else:
                         pred_lem += c  # add character

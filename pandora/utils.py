@@ -14,9 +14,10 @@ PAD, EOS, BOS, UNK = '<PAD>', '<EOS>', '<BOS>', '<UNK>'
 
 
 def load_annotated_dir(directory='directory', format='tab',
-                       extension='.txt', nb_instances=None,
+                       extensions='.txt', nb_instances=None,
                        include_lemma=True, include_morph=True,
-                       include_pos=True):
+                       include_pos=True, col_pos=None,
+                       col_lemma=None, col_morph=None):
 
     """Loads annotated data files from a (single) directory.
 
@@ -70,7 +71,7 @@ def load_annotated_dir(directory='directory', format='tab',
         for name in sorted(files):
             filepath = os.path.join(root, name)
 
-            if not filepath.endswith(extension):
+            if not filepath.endswith(extensions):
                 continue
 
             insts = load_annotated_file(filepath=filepath,
@@ -78,7 +79,10 @@ def load_annotated_dir(directory='directory', format='tab',
                                         nb_instances=nb_instances,
                                         include_lemma=include_lemma,
                                         include_morph=include_morph,
-                                        include_pos=include_pos)
+                                        include_pos=include_pos,
+                                        col_pos = col_pos,
+                                        col_lemma= col_lemma,
+                                        col_morph = col_morph)
 
             instances['token'].extend(insts['token'])
             if include_lemma:
@@ -93,7 +97,8 @@ def load_annotated_dir(directory='directory', format='tab',
 
 def load_annotated_file(filepath='text.txt', format='tab',
                         nb_instances=None, include_lemma=True,
-                        include_morph=True, include_pos=True):
+                        include_morph=True, include_pos=True,
+                        col_pos = None, col_lemma = None, col_morph=None):
 
     """Loads the annotated instances from a single file.
 
@@ -188,19 +193,28 @@ def load_annotated_file(filepath='text.txt', format='tab',
                         break
 
     elif format == 'tab':
-        with codecs.open(filepath, 'r', 'utf8') as f:
-            for line in f.readlines():
+        # Defaults
+        if col_lemma is None:
+            col_lemma = 1
+        if col_pos is None:
+            col_pos = 2
+        if col_morph is None:
+            col_morph = 3
+        # Set from config file, if available
+        
+        with codecs.open(filepath, 'r', 'utf8') as cod:
+            for line in cod:
                 line = line.strip()
                 if line and not line[0] == '@':
                     try:
                         comps = line.split()
                         tok = comps[0]
                         if include_lemma:
-                            lem = comps[1].lower().strip()
+                            lem = comps[col_lemma].lower().strip()
                         if include_pos:
-                            pos = comps[2]
+                            pos = comps[col_pos]
                         if include_morph:
-                            morph = '|'.join(comps[3].split('|'))
+                            morph = '|'.join(comps[col_morph].split('|'))
                         tok = tok.strip().replace('~', '').replace(' ', '')
                         instances['token'].append(tok)
                         if include_lemma:
